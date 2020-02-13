@@ -1,0 +1,28 @@
+header {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+footer {
+    margin-top: 10px;
+    text-align: center;
+}
+
+#canvas {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: purple;
+    height: 300px;
+    width: 400px;
+}
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.inner-container {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
