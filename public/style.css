@@ -1,21 +1,46 @@
+* {
+    font-family: "Indie Flower", cursive;
+    /* background-color: #00a8ff; */
+}
+
 header {
     margin-bottom: 10px;
     text-align: center;
+    font-size: 40px;
+    background-color: #00a8ff;
 }
 
 footer {
     margin-top: 10px;
     text-align: center;
+    font-size: 12px;
+}
+
+#water {
+    object-fit: cover;
+    width: 300px;
+}
+
+p {
+    font-size: 25px;
 }
 
 #canvas {
     margin-top: 10px;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     background-color: purple;
 }
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    background-image: url(/background-water.jpg);
+    object-fit: cover;
+    background-size: 100vw;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 90vh;
 }
 
 .inner-container {
@@ -25,6 +50,7 @@ footer {
     align-items: center;
 }
 .err {
+    margin: 10px;
     width: 300px;
     background-color: red;
     text-align: center;
@@ -32,4 +58,42 @@ footer {
 
 .signature {
     width: 400px;
+}
+
+#sign {
+    font-size: 15px;
+    margin: 0;
+}
+
+button {
+    border: black 2px solid;
+}
+
+#sig {
+    border: black solid 3px;
+    border-radius: 10%;
+}
+
+#sig p {
+    text-align: center;
+}
+
+#thanks-inner-container {
+    display: flex;
+    /* justify-content: center; */
+    flex-direction: column;
+    align-items: center;
+}
+
+#thanks-outer-container {
+    background-image: url(/thanks.jpg);
+    object-fit: cover;
+    background-size: 100vw;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 79vh;
+}
+
+h1 {
+    text-align: center;
 }
