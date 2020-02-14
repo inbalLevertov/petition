@@ -1,12 +1,15 @@
-{{#if error}}
-<div class='err'>oops!</div>
-{{/if}}
+
 <div class="container">
     <div class="inner-container">
+        {{#if error}}
+        <div class='err'>Ooops! Forgot something??</div>
+        {{/if}}
         <form method='POST'>
             <input placeholder="first name" name="first">
             <input placeholder="last name" name="last">
             <input type='hidden' id="sig" name="sig">
+            <input type='hidden' name="_csrf" value={{csrfToken}}>
+
             <button name="button">submit</button>
             {{isInput}}
         </form>

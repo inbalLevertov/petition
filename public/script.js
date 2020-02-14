@@ -18,36 +18,41 @@ console.log("hello");
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-let paint = true;
+let paint = false;
 
 ctx.strokeStyle = "tomato";
 ctx.lineWidth = 3;
 
-let xBegin, yBegin, xEnd, yEnd;
+let xBegin = 0;
+let yBegin = 0;
+let xEnd = 0;
+let yEnd = 0;
 
 $("#canvas").on("mousedown", function(e) {
-    xBegin = e.clientX;
-    yBegin = e.clientY;
-    ctx.moveTo(xBegin, yBegin);
-    console.log("is this hapening");
     paint = true;
+    xBegin = e.offsetX;
+    yBegin = e.offsetY;
+    ctx.moveTo(xBegin, yBegin);
+    // console.log("is this hapening");
 });
 
 $("#canvas").on("mousemove", function(e) {
     xEnd = e.offsetX;
     yEnd = e.offsetY;
     if (paint === true) {
-        drawSig(xBegin, yBegin, xEnd, yEnd);
+        drawSig(xEnd, yEnd);
     }
 });
 
-function drawSig(xB, yB, xE, yE) {
-    ctx.lineTo(xE, yE);
+function drawSig(xEnd, yEnd) {
+    ctx.lineTo(xEnd, yEnd);
     ctx.stroke();
 }
 
 $("#canvas").on("mouseup", function() {
     paint = false;
     let URL = canvas.toDataURL("image/png", 1.0);
+    $("input#sig").val($("canvas")[0].toDataURL());
+
     console.log(URL);
 });

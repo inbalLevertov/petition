@@ -12,8 +12,6 @@ footer {
     margin-top: 10px;
     margin-bottom: 10px;
     background-color: purple;
-    height: 300px;
-    width: 400px;
 }
 .container {
     display: flex;
@@ -25,4 +23,13 @@ footer {
     flex-direction: column;
     /* justify-content: center; */
     align-items: center;
+}
+.err {
+    width: 300px;
+    background-color: red;
+    text-align: center;
+}
+
+.signature {
+    width: 400px;
 }
