@@ -1,20 +1,44 @@
 const spicedPg = require("spiced-pg");
 const db = spicedPg(`postgres://postgres:postgres@localhost:5432/signatures`);
 
-exports.addSigner = function(first, last, sig) {
+exports.addSigner = function(sig, userId) {
+    console.log("addSigner is working: ", sig, userId);
     return db.query(
-        `INSERT INTO signatures (first, last, sig)
-    VALUES ($1, $2, $3)
+        `INSERT INTO signatures (signature, user_id)
+    VALUES ($1, $2)
     RETURNING id`,
-        [first, last, sig]
+        [sig, userId]
     );
 };
 
 exports.getSig = function(id) {
-    return db.query(`SELECT sig FROM signatures WHERE id = $1`, [id]);
+    return db.query(`SELECT signature FROM signatures WHERE user_id = $1`, [
+        id
+    ]);
 };
+
 exports.getFirstandLast = function() {
-    return db.query(`SELECT first, last FROM signatures`);
+    return db.query(`SELECT first, last FROM users`);
+};
+
+exports.addRegister = function(first, last, email, password) {
+    console.log("addRegister is working");
+    return db.query(
+        `INSERT INTO users (first, last, email, password)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id`,
+        [first, last, email, password]
+    );
+};
+
+exports.getPass = function(email) {
+    return db.query(`SELECT password, id FROM users WHERE email = $1`, [email]);
+};
+
+exports.ifSigned = function(userId) {
+    return db.query(`SELECT signature FROM signatures WHERE user_id = $1`, [
+        userId
+    ]);
 };
 // exports.getLast = function() {
 //     return db.query(`SELECT last FROM signatures`);
@@ -50,3 +74,6 @@ exports.getFirstandLast = function() {
 //         console.log(rows)
 //     }
 // );
+
+//command to search for the database: history | grep git
+//sudo service postgresql start

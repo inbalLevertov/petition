@@ -8,13 +8,10 @@
         <p>Join us in the fight against Leitungswasser shaming!</p>
         <p>(we were gonna order food anyway)</p>
         <form method='POST'>
-            <input placeholder="first name" name="first">
-            <input placeholder="last name" name="last">
-            <input type='hidden' id="sig" name="sig">
+            <input type='hidden' id="sig" name="signature">
             <input type='hidden' name="_csrf" value={{csrfToken}}>
 
             <button name="button">submit</button>
-            {{isInput}}
         </form>
         <canvas id="canvas" width="300" height="100"></canvas>
         <p id="sign">sign here</p>
