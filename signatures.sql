@@ -9,7 +9,6 @@
 
  CREATE TABLE signatures(
       id SERIAL PRIMARY KEY,
-      -- get rid of first and last!
       signature TEXT NOT NULL,
       user_id INTEGER NOT NULL REFERENCES users(id),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -23,3 +22,20 @@
        password VARCHAR(255) NOT NULL CHECK (password != ''),
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
    );
+
+ -- CREATE TABLE user_profiles (
+ --     id SERIAL PRIMARY KEY,
+ --     age INTEGER,
+ --     city VARCHAR,
+ --     url VARCHAR,
+ --     user_id NOT NULL UNIQUE REFERENCES users(id),
+ --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ -- );
+
+ CREATE TABLE user_profiles(
+     id SERIAL PRIMARY KEY,
+     age INTEGER,
+     city VARCHAR,
+     url VARCHAR,
+     user_id INTEGER NOT NULL UNIQUE REFERENCES users(id)
+ );

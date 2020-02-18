@@ -40,7 +40,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
     // console.log(req.body);
     const { password, first, last, email } = req.body;
-    console.log(password);
+    // console.log(password);
     //i will want to grab the useres password, somethinglike req.body.password
     //use hash to take user input created the hashed version of PW to storw in db
     hash(password).then(hashedPw => {
@@ -57,7 +57,7 @@ app.post("/register", (req, res) => {
                     email !== "" ||
                     hashedPw !== ""
                 ) {
-                    res.redirect("/petition");
+                    res.redirect("/profile");
                 }
             })
             .catch(err => {
@@ -68,6 +68,35 @@ app.post("/register", (req, res) => {
                 });
             });
     });
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile", {});
+});
+
+app.post("/profile", (req, res) => {
+    const { age, city, url } = req.body;
+    const userId = req.session.userId;
+    console.log("age: ", age, "city: ", city, "homepage: ", url);
+    // if (age === null && city === "" && !url.startsWith("http://"))
+    if (age !== "" || city !== "" || url.startsWith("http://")) {
+        console.log("user hasnt give any info, redirecting to petition");
+        res.redirect("/petition");
+    } else {
+        db.addProfile(age, city, url, userId)
+            .then(() => {
+                console.log(
+                    `the user added age: ${age}, city: ${city}, homepage: ${url} and userId: ${userId}`
+                );
+                req.session.userAge = age;
+                req.session.usercity = city;
+                req.session.userUrl = url;
+                res.redirect("/petition");
+            })
+            .catch(err => {
+                console.log("error in db.addprofile: ", err);
+            });
+    }
 });
 
 // double(2).then(resultFromDbl => {
@@ -82,13 +111,13 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    console.log("req.session.userId: ", req.session.userId);
+    // console.log("req.session.userId: ", req.session.userId);
     // console.log("req.body: ", req.body);
     const { email, password } = req.body;
-    console.log("email: ", email, "password: ", password);
+    // console.log("email: ", email, "password: ", password);
     db.getPass(email)
         .then(response => {
-            console.log("response: ", response);
+            // console.log("response: ", response);
             req.session.userId = response.rows[0].id;
             const hashedPwInDb = response.rows[0].password;
             console.log("response of db.getpass: ", response.rows[0]);
@@ -103,10 +132,12 @@ app.post("/login", (req, res) => {
                                     response.rows
                                 );
                                 if (response.rows.length > 0) {
-                                    // req.session.sigId =
-                                    //     response.rows[0].signature;
+                                    req.session.sigId =
+                                        // response.rows[0].signature;
+                                        console.log("the user has signed");
                                     res.redirect("/thanks");
                                 } else {
+                                    console.log("the user didnt sign");
                                     res.redirect("/petition");
                                 }
                             })
@@ -152,10 +183,6 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", (req, res) => {
     const { signature } = req.body;
-    // console.log("first: ", first);
-    // console.log("last: ", last);
-    console.log("signature: ", signature);
-    // console.log("req.body ", req.body);
     const userId = req.session.userId;
     db.addSigner(signature, userId)
         .then(response => {
@@ -164,7 +191,13 @@ app.post("/petition", (req, res) => {
         })
         .then(() => {
             if (signature !== "") {
+                // req.session.sigId = signature;
                 res.redirect("/thanks");
+            } else {
+                res.render("petition", {
+                    layout: "main",
+                    error: true
+                });
             }
         })
         .catch(() => {
@@ -181,7 +214,7 @@ app.get("/thanks", (req, res) => {
     let userId = req.session.userId;
     db.getSig(userId).then(response => {
         let image = response.rows[0].signature;
-        console.log(response);
+        console.log("this is the response in thanks:", response);
         res.render("thanks", {
             layout: "main",
             image,
@@ -192,14 +225,33 @@ app.get("/thanks", (req, res) => {
 
 app.get("/signers", (req, res) => {
     // const userId = req.session.userId;
-    db.getFirstandLast().then(result => {
-        console.log(result);
-        const names = result.rows;
+    db.getFullProfile()
+        .then(result => {
+            console.log(result);
+            const names = result.rows;
+            res.render("signers", {
+                layout: "main",
+                names
+            });
+        })
+        .catch(err => {
+            console.log("error in db.getFullProfile: ", err);
+        });
+});
+
+app.get("/signers/:city", (req, res) => {
+    const city = req.params.city;
+    // console.log(city);
+    db.getCity(city).then(result => {
+        // console.log("result in signers/:city: ", result);
+        const usersOfCity = result.rows;
+        console.log("result.rows: ", usersOfCity);
         res.render("signers", {
-            layout: "main",
-            names
+            cities: true,
+            usersOfCity
         });
     });
+    // res.send("this is the city: ", city);
 });
 
 app.listen(8080, () => console.log("port 8080 listening"));

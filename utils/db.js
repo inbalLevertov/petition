@@ -2,7 +2,7 @@ const spicedPg = require("spiced-pg");
 const db = spicedPg(`postgres://postgres:postgres@localhost:5432/signatures`);
 
 exports.addSigner = function(sig, userId) {
-    console.log("addSigner is working: ", sig, userId);
+    // console.log("addSigner is working: ", sig, userId);
     return db.query(
         `INSERT INTO signatures (signature, user_id)
     VALUES ($1, $2)
@@ -21,13 +21,47 @@ exports.getFirstandLast = function() {
     return db.query(`SELECT first, last FROM users`);
 };
 
+exports.getCity = function(city) {
+    return db.query(
+        `SELECT users.first, users.last, user_profiles.age, user_profiles.city, user_profiles.url
+FROM users
+LEFT JOIN user_profiles
+ ON user_profiles.user_id = users.id
+JOIN signatures
+ON signatures.user_id = users.id
+WHERE user_profiles.city = $1`,
+        [city]
+    );
+};
+
+exports.getFullProfile = function() {
+    return db.query(`SELECT users.first, users.last, user_profiles.age, user_profiles.city, user_profiles.url
+FROM users
+LEFT JOIN user_profiles
+ ON user_profiles.user_id = users.id
+JOIN signatures
+ON signatures.user_id = users.id`);
+};
+
+// change the query to get signers to get first and last name from the users table
+// and get the age, city and url from user_profiles. Double join!
+
 exports.addRegister = function(first, last, email, password) {
-    console.log("addRegister is working");
+    // console.log("addRegister is working");
     return db.query(
         `INSERT INTO users (first, last, email, password)
     VALUES ($1, $2, $3, $4)
     RETURNING id`,
         [first, last, email, password]
+    );
+};
+
+exports.addProfile = function(age, city, url, userId) {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url, user_id)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id`,
+        [age, city, url, userId]
     );
 };
 

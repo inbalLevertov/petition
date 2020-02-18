@@ -2,6 +2,17 @@
 
 <ul>
             {{#names}}
-            <li>{{first}} {{last}}</li>
+            <li>{{first}} {{last}} {{age}}
+            <a href="signers/{{city}}">{{city}}</a></li>
+            <a href={{url}} target="_blank">{{url}}</a></li>
             {{/names}}
         </ul>
+
+
+{{#if cities}}
+        <ul>
+            {{#usersOfCity}}
+                <li>{{first}} {{last}} {{age}} {{city}} {{url}}</li>
+            {{/usersOfCity}}
+        </ul>
+{{/if}}
