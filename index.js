@@ -78,8 +78,7 @@ app.post("/profile", (req, res) => {
     const { age, city, url } = req.body;
     const userId = req.session.userId;
     console.log("age: ", age, "city: ", city, "homepage: ", url);
-    // if (age === null && city === "" && !url.startsWith("http://"))
-    if (age !== "" || city !== "" || url.startsWith("http://")) {
+    if (age === "" && city === "" && !url.startsWith("http://")) {
         console.log("user hasnt give any info, redirecting to petition");
         res.redirect("/petition");
     } else {
