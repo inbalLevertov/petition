@@ -44,11 +44,11 @@ app.post("/register", (req, res) => {
     //i will want to grab the useres password, somethinglike req.body.password
     //use hash to take user input created the hashed version of PW to storw in db
     hash(password).then(hashedPw => {
-        console.log("hashedPw from / register: ", hashedPw);
+        // console.log("hashedPw from / register: ", hashedPw);
         db.addRegister(first, last, email, hashedPw)
             .then(response => {
                 req.session.userId = response.rows[0].id;
-                console.log(response.rows[0].id);
+                // console.log(response.rows[0].id);
             })
             .then(() => {
                 if (
@@ -77,19 +77,20 @@ app.get("/profile", (req, res) => {
 app.post("/profile", (req, res) => {
     const { age, city, url } = req.body;
     const userId = req.session.userId;
-    console.log("age: ", age, "city: ", city, "homepage: ", url);
+    // console.log("age: ", age, "city: ", city, "homepage: ", url);
     if (age === "" && city === "" && !url.startsWith("http://")) {
         console.log("user hasnt give any info, redirecting to petition");
         res.redirect("/petition");
     } else {
+        console.log("post addProfile: ", age, city, url, userId);
         db.addProfile(age, city, url, userId)
             .then(() => {
-                console.log(
-                    `the user added age: ${age}, city: ${city}, homepage: ${url} and userId: ${userId}`
-                );
-                req.session.userAge = age;
-                req.session.usercity = city;
-                req.session.userUrl = url;
+                // console.log(
+                //     `the user added age: ${age}, city: ${city}, homepage: ${url} and userId: ${userId}`
+                // );
+                // req.session.userAge = age;
+                // req.session.usercity = city;
+                // req.session.userUrl = url;
                 res.redirect("/petition");
             })
             .catch(err => {
@@ -102,35 +103,83 @@ app.get("/profile/edit", (req, res) => {
     const userId = req.session.userId;
     db.renderFullProfile(userId).then(result => {
         const profile = result.rows[0];
-        console.log("this is the profile: ", profile);
+        // console.log("this is the profile: ", profile);
         res.render("editprofile", {
             layout: "main",
             profile
         });
-        // console.log(
-        //     "this is the result of renderFullProfile.rows: ",
-        //     result.rows[0]
-        // );
     });
 });
 
-// app.post("/profile/edit", (req, res) => {
-//     console.log("this is the req.body: ", req.body);
-//     const { first, last, email, password, age, city, url } = req.body;
-//     // console.log('details from /profile/edit: ', first, last, email, password, age, city, url );
-//     const userId = req.session.userId;
-//     //is renderFullProfile needed??
-//     db.renderFullProfile(userId).then(result => {
-//         //     console.log("this is the result of renderFullProfile: ", result);
-//         db.updateNoPass(first, last, email, userId).then();
-//     });
+app.post("/profile/edit", (req, res) => {
+    // console.log("this is the req.body: ", req.body);
+    const { first, last, email, password, age, city, url } = req.body;
+    // console.log(
+    //     "details from /profile/edit: ",
+    //     first,
+    //     last,
+    //     email,
+    //     password,
+    //     age,
+    //     city,
+    //     url
+    // );
+    console.log(req.body);
+    const userId = req.session.userId;
+    if (password === "") {
+        db.updateNoPass(first, last, email, userId)
+            .then(() => {
+                db.updateExtraInfo(age, city, url, userId)
+                    .then(() => {
+                        console.log("success");
+                        // res.render("thanks", {
+                        //     layout: "main",
+                        //     updated: true
+                        // });
+                    })
+                    .catch(err => {
+                        console.log("error in updateExtraInfo: ", err);
+                        res.render("editprofile", {
+                            layout: "main",
+                            error: true
+                        });
+                    });
+            })
+            .catch(err => {
+                console.log("error in updateNoPass: ", err);
+                // res.render("/profile/edit", {
+                //     layout: "main",
+                //     error: true
+                // });
+            });
+    } else {
+        hash(password).then(hashedPw => {
+            // console.log("hashedPw from / register: ", hashedPw);
+            db.updateWithPass(first, last, email, hashedPw, userId)
+                .then(() => {
+                    res.render("thanks", {
+                        layout: "main",
+                        updated: true
+                    });
+                })
+                .catch(err => {
+                    console.log("error in updateWithPass: ", err);
+                    res.render("editprofile", {
+                        layout: "main",
+                        error: true
+                    });
+                });
+        });
+    }
+});
+
+// });
 
 // if (age === "" && city === "" && !url.startsWith("http://"))
 
 // const userId = req.session.userId;
 // db.renderFullProfile(userId).then(result => {
 //     console.log("this is the result of renderFullProfile: ", result);
-// });
 // });
 
 // double(2).then(resultFromDbl => {
@@ -154,17 +203,17 @@ app.post("/login", (req, res) => {
             // console.log("response: ", response);
             req.session.userId = response.rows[0].id;
             const hashedPwInDb = response.rows[0].password;
-            console.log("response of db.getpass: ", response.rows[0]);
+            // console.log("response of db.getpass: ", response.rows[0]);
             compare(password, hashedPwInDb)
                 .then(matchValue => {
-                    console.log("match Value of Compare: ", matchValue);
+                    // console.log("match Value of Compare: ", matchValue);
                     if (matchValue) {
                         db.ifSigned(req.session.userId)
                             .then(response => {
-                                console.log(
-                                    "response.rows of db.ifSigned: ",
-                                    response.rows
-                                );
+                                // console.log(
+                                //     "response.rows of db.ifSigned: ",
+                                //     response.rows
+                                // );
                                 if (response.rows.length > 0) {
                                     req.session.sigId =
                                         // response.rows[0].signature;
@@ -248,7 +297,7 @@ app.get("/thanks", (req, res) => {
     let userId = req.session.userId;
     db.getSig(userId).then(response => {
         let image = response.rows[0].signature;
-        console.log("this is the response in thanks:", response);
+        // console.log("this is the response in thanks:", response);
         res.render("thanks", {
             layout: "main",
             image,
@@ -261,7 +310,7 @@ app.get("/signers", (req, res) => {
     // const userId = req.session.userId;
     db.getFullProfile()
         .then(result => {
-            console.log(result);
+            // console.log(result);
             const names = result.rows;
             res.render("signers", {
                 layout: "main",
@@ -279,7 +328,7 @@ app.get("/signers/:city", (req, res) => {
     db.getCity(city).then(result => {
         // console.log("result in signers/:city: ", result);
         const usersOfCity = result.rows;
-        console.log("result.rows: ", usersOfCity);
+        // console.log("result.rows: ", usersOfCity);
         res.render("signers", {
             cities: true,
             usersOfCity

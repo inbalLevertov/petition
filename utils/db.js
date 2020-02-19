@@ -64,7 +64,7 @@ exports.addProfile = function(age, city, url, userId) {
         `INSERT INTO user_profiles (age, city, url, user_id)
     VALUES ($1, $2, $3, $4)
     RETURNING id`,
-        [age, city, url, userId]
+        [age || null, city, url, userId]
     );
 };
 
@@ -91,13 +91,19 @@ LEFT JOIN user_profiles
 
 exports.updateNoPass = function(first, last, email, userId) {
     return db.query(
-        `INSERT INTO users (first, last, email, user_id)
-        VALUES ($1, $2, $3, $4)
-        ON CONFLICT (user_id) DO
-        UPDATE users SET first=$1, last=$2, email=$3, user_id=$4`,
+        `UPDATE users SET first=$1, last=$2, email=$3 WHERE id=$4`,
         [first, last, email, userId]
     );
 };
+
+exports.updateWithPass = function(first, last, email, hashedPw, userId) {
+    return db.query(
+        `UPDATE users SET first=$1, last=$2, email=$3, password=$4 WHERE id=$5`,
+        [first, last, email, hashedPw, userId]
+    );
+};
+
+// UPDATE actors SET first='Brad', last='Pitt' WHERE first=Leonardo AND last='Dicaprio';
 
 // exports.addRegister = function(first, last, email, password) {
 //     // console.log("addRegister is working");
@@ -108,6 +114,16 @@ exports.updateNoPass = function(first, last, email, userId) {
 //         [first, last, email, password]
 //     );
 // };
+
+exports.updateExtraInfo = function(age, city, url, userId) {
+    return db.query(
+        `INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id) DO
+        UPDATE SET age=$1, city=$2, url=$3`,
+        [age, city, url, userId]
+    );
+};
 
 // -- INSERT INTO actors (first, last, email, user_id)
 // -- VALUES ('Brad', 'Pitt', 'brad@aol.com', 42)
