@@ -78,19 +78,20 @@ app.post("/profile", (req, res) => {
     const { age, city, url } = req.body;
     const userId = req.session.userId;
     // console.log("age: ", age, "city: ", city, "homepage: ", url);
-    if (age === "" && city === "" && !url.startsWith("http://")) {
+    if (age === "" && city === "" && url === "") {
         console.log("user hasnt give any info, redirecting to petition");
+        res.redirect("/petition");
+    } else if (
+        !url.startsWith("http://") ||
+        !url.startsWith("https://") ||
+        !url.startsWith("//")
+    ) {
+        console.log("user has given a flase URL. redirecting to petition");
         res.redirect("/petition");
     } else {
         console.log("post addProfile: ", age, city, url, userId);
         db.addProfile(age, city, url, userId)
             .then(() => {
-                // console.log(
-                //     `the user added age: ${age}, city: ${city}, homepage: ${url} and userId: ${userId}`
-                // );
-                // req.session.userAge = age;
-                // req.session.usercity = city;
-                // req.session.userUrl = url;
                 res.redirect("/petition");
             })
             .catch(err => {
@@ -114,17 +115,7 @@ app.get("/profile/edit", (req, res) => {
 app.post("/profile/edit", (req, res) => {
     // console.log("this is the req.body: ", req.body);
     const { first, last, email, password, age, city, url } = req.body;
-    // console.log(
-    //     "details from /profile/edit: ",
-    //     first,
-    //     last,
-    //     email,
-    //     password,
-    //     age,
-    //     city,
-    //     url
-    // );
-    console.log(req.body);
+    // console.log(req.body);
     const userId = req.session.userId;
     if (password === "") {
         db.updateNoPass(first, last, email, userId)
@@ -132,13 +123,16 @@ app.post("/profile/edit", (req, res) => {
                 db.updateExtraInfo(age, city, url, userId)
                     .then(() => {
                         console.log("success");
-                        // res.render("thanks", {
-                        //     layout: "main",
-                        //     updated: true
-                        // });
+                        res.render("thanks", {
+                            layout: "main",
+                            updated: true
+                        });
                     })
                     .catch(err => {
-                        console.log("error in updateExtraInfo: ", err);
+                        console.log(
+                            "error in updateExtraInfo with old pass: ",
+                            err
+                        );
                         res.render("editprofile", {
                             layout: "main",
                             error: true
@@ -147,20 +141,30 @@ app.post("/profile/edit", (req, res) => {
             })
             .catch(err => {
                 console.log("error in updateNoPass: ", err);
-                // res.render("/profile/edit", {
-                //     layout: "main",
-                //     error: true
-                // });
             });
     } else {
         hash(password).then(hashedPw => {
             // console.log("hashedPw from / register: ", hashedPw);
             db.updateWithPass(first, last, email, hashedPw, userId)
                 .then(() => {
-                    res.render("thanks", {
-                        layout: "main",
-                        updated: true
-                    });
+                    db.updateExtraInfo(age, city, url, userId)
+                        .then(() => {
+                            console.log("success");
+                            res.render("thanks", {
+                                layout: "main",
+                                updated: true
+                            });
+                        })
+                        .catch(err => {
+                            console.log(
+                                "error in updateExtraInfo with new pass: ",
+                                err
+                            );
+                            res.render("editprofile", {
+                                layout: "main",
+                                error: true
+                            });
+                        });
                 })
                 .catch(err => {
                     console.log("error in updateWithPass: ", err);
@@ -172,22 +176,6 @@ app.post("/profile/edit", (req, res) => {
         });
     }
 });
-
-// });
-
-// if (age === "" && city === "" && !url.startsWith("http://"))
-
-// const userId = req.session.userId;
-// db.renderFullProfile(userId).then(result => {
-//     console.log("this is the result of renderFullProfile: ", result);
-// });
-
-// double(2).then(resultFromDbl => {
-//     double(10).then(resultFromSecondDbl => {
-//         console.log(resultFromDbl);
-//         console.log(resultFromSecondDbl);
-//     }).catch(err => console.log('err in 2ndDbl: ', err));
-// }).catch(err => console.log('err in 1stDbl: ', err));
 
 app.get("/login", (req, res) => {
     res.render("login", {});
@@ -206,14 +194,9 @@ app.post("/login", (req, res) => {
             // console.log("response of db.getpass: ", response.rows[0]);
             compare(password, hashedPwInDb)
                 .then(matchValue => {
-                    // console.log("match Value of Compare: ", matchValue);
                     if (matchValue) {
                         db.ifSigned(req.session.userId)
                             .then(response => {
-                                // console.log(
-                                //     "response.rows of db.ifSigned: ",
-                                //     response.rows
-                                // );
                                 if (response.rows.length > 0) {
                                     req.session.sigId =
                                         // response.rows[0].signature;
@@ -304,6 +287,24 @@ app.get("/thanks", (req, res) => {
             signersNr
         });
     });
+});
+
+// app.post("/thanks", (req, res) => {
+//     console.log("req.body in /thanks: ", req.body);
+//     // console.log("this req.body: ", req.body);
+// });
+
+app.post("/delete/signature", (req, res) => {
+    console.log("req.body in /delete/signature: ", req.body);
+    const userId = req.session.userId;
+    db.deleteSig(userId)
+        .then(() => {
+            req.session.sigId = null;
+            res.redirect("/petition");
+        })
+        .catch(err => {
+            console.log("error in db.deleteSig: ", err);
+        });
 });
 
 app.get("/signers", (req, res) => {

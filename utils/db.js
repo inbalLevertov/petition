@@ -125,6 +125,10 @@ exports.updateExtraInfo = function(age, city, url, userId) {
     );
 };
 
+exports.deleteSig = function(userId) {
+    return db.query(`DELETE FROM signatures WHERE user_id=$1`, [userId]);
+};
+
 // -- INSERT INTO actors (first, last, email, user_id)
 // -- VALUES ('Brad', 'Pitt', 'brad@aol.com', 42)
 // -- ON CONFLICT (user_id) DO
