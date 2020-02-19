@@ -98,6 +98,41 @@ app.post("/profile", (req, res) => {
     }
 });
 
+app.get("/profile/edit", (req, res) => {
+    const userId = req.session.userId;
+    db.renderFullProfile(userId).then(result => {
+        const profile = result.rows[0];
+        console.log("this is the profile: ", profile);
+        res.render("editprofile", {
+            layout: "main",
+            profile
+        });
+        // console.log(
+        //     "this is the result of renderFullProfile.rows: ",
+        //     result.rows[0]
+        // );
+    });
+});
+
+// app.post("/profile/edit", (req, res) => {
+//     console.log("this is the req.body: ", req.body);
+//     const { first, last, email, password, age, city, url } = req.body;
+//     // console.log('details from /profile/edit: ', first, last, email, password, age, city, url );
+//     const userId = req.session.userId;
+//     //is renderFullProfile needed??
+//     db.renderFullProfile(userId).then(result => {
+//         //     console.log("this is the result of renderFullProfile: ", result);
+//         db.updateNoPass(first, last, email, userId).then();
+//     });
+
+// if (age === "" && city === "" && !url.startsWith("http://"))
+
+// const userId = req.session.userId;
+// db.renderFullProfile(userId).then(result => {
+//     console.log("this is the result of renderFullProfile: ", result);
+// });
+// });
+
 // double(2).then(resultFromDbl => {
 //     double(10).then(resultFromSecondDbl => {
 //         console.log(resultFromDbl);
@@ -253,7 +288,7 @@ app.get("/signers/:city", (req, res) => {
     // res.send("this is the city: ", city);
 });
 
-app.listen(8080, () => console.log("port 8080 listening"));
+app.listen(process.env.PORT || 8080, () => console.log("port 8080 listening"));
 
 // app.use(function(req, res, next) {
 //     res.set('x-frame-options':'deny')

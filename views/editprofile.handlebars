@@ -1,0 +1,26 @@
+<div class="profile-container">
+
+
+<div class="fullProfile">
+
+
+
+<form method='POST'>
+    <input type='hidden' name="_csrf" value={{csrfToken}}>    
+    {{#profile}}
+    <input value={{first}} name="first">First Name
+    <input value={{last}} name="last">Last Name
+    <input value={{email}} name="email">Email Address
+    <input name="password">Password
+    <input value={{age}} name="age">Age
+    <input value={{city}} name="city">City
+    <input value={{url}} name="url">Homepage
+    <button id="edit-profile" name="button">edit profile</button>
+    {{/profile}}
+
+</form>
+
+
+</div>
+
+</div>

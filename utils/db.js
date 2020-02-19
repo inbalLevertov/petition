@@ -1,5 +1,8 @@
 const spicedPg = require("spiced-pg");
-const db = spicedPg(`postgres://postgres:postgres@localhost:5432/signatures`);
+const db = spicedPg(
+    process.env.DATABASE_URL ||
+        `postgres://postgres:postgres@localhost:5432/signatures`
+);
 
 exports.addSigner = function(sig, userId) {
     // console.log("addSigner is working: ", sig, userId);
@@ -74,6 +77,48 @@ exports.ifSigned = function(userId) {
         userId
     ]);
 };
+
+exports.renderFullProfile = function(userId) {
+    return db.query(
+        `SELECT users.first, users.last, users.email, user_profiles.age, user_profiles.city, user_profiles.url
+FROM users
+LEFT JOIN user_profiles
+ ON user_profiles.user_id = users.id
+ WHERE users.id = $1`,
+        [userId]
+    );
+};
+
+exports.updateNoPass = function(first, last, email, userId) {
+    return db.query(
+        `INSERT INTO users (first, last, email, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id) DO
+        UPDATE users SET first=$1, last=$2, email=$3, user_id=$4`,
+        [first, last, email, userId]
+    );
+};
+
+// exports.addRegister = function(first, last, email, password) {
+//     // console.log("addRegister is working");
+//     return db.query(
+//         `INSERT INTO users (first, last, email, password)
+//     VALUES ($1, $2, $3, $4)
+//     RETURNING id`,
+//         [first, last, email, password]
+//     );
+// };
+
+// -- INSERT INTO actors (first, last, email, user_id)
+// -- VALUES ('Brad', 'Pitt', 'brad@aol.com', 42)
+// -- ON CONFLICT (user_id) DO
+// -- UPDATE actors SET first='Brad', last='Pitt';
+
+// -- db.query(
+// --     'INSERT INTO whatev (numer) VALUES $1',
+// --     [VALUE || null]
+// -- );
+
 // exports.getLast = function() {
 //     return db.query(`SELECT last FROM signatures`);
 // };

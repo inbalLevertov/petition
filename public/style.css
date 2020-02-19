@@ -97,3 +97,22 @@ button {
 h1 {
     text-align: center;
 }
+.profile-container {
+    display: flex;
+    justify-content: center;
+}
+.fullProfile form {
+    display: flex;
+    flex-direction: column;
+}
+
+.fullProfile form input {
+    width: 200px;
+    margin-top: 10px;
+}
+
+#edit-profile {
+    width: 200px;
+    background-color: yellow;
+    border: black 3px solid;
+}
