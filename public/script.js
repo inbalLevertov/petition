@@ -54,5 +54,5 @@ $("#canvas").on("mouseup", function() {
     let URL = canvas.toDataURL("image/png", 1.0);
     $("input#sig").val($("canvas")[0].toDataURL());
 
-    console.log(URL);
+    // console.log(URL);
 });

@@ -1,10 +1,20 @@
 const express = require("express");
 const app = express();
+exports.app = app;
 const hb = require("express-handlebars");
 const db = require("./utils/db");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 const { hash, compare } = require("./utils/bc");
+const {
+    requireLoggedOutUser,
+    requireNoSignature,
+    requireSignature
+} = require("./utils/middleware");
+// const profileRouter = require("/profile");
+// app.use("/profile", profileRouter);
+
+app.use(express.static("./public"));
 
 app.use(
     express.urlencoded({
@@ -27,28 +37,34 @@ app.use(function(req, res, next) {
     next();
 });
 
+// app.use(function(req, res, next) {
+//     if (
+//         !req.session.userId &&
+//         req.url !== "/register" &&
+//         req.url !== "/login"
+//     ) {
+//         res.redirect("/register");
+//     } else {
+//         next();
+//     }
+// });
+
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-// app.use(express.static("./projects"));
-app.use(express.static("./public"));
-
-app.get("/register", (req, res) => {
+app.get("/register", requireLoggedOutUser, (req, res) => {
     res.render("register", {});
 });
 
-app.post("/register", (req, res) => {
-    // console.log(req.body);
+app.post("/register", requireLoggedOutUser, (req, res) => {
     const { password, first, last, email } = req.body;
     // console.log(password);
     //i will want to grab the useres password, somethinglike req.body.password
     //use hash to take user input created the hashed version of PW to storw in db
     hash(password).then(hashedPw => {
-        // console.log("hashedPw from / register: ", hashedPw);
         db.addRegister(first, last, email, hashedPw)
             .then(response => {
                 req.session.userId = response.rows[0].id;
-                // console.log(response.rows[0].id);
             })
             .then(() => {
                 if (
@@ -77,19 +93,18 @@ app.get("/profile", (req, res) => {
 app.post("/profile", (req, res) => {
     const { age, city, url } = req.body;
     const userId = req.session.userId;
-    // console.log("age: ", age, "city: ", city, "homepage: ", url);
     if (age === "" && city === "" && url === "") {
         console.log("user hasnt give any info, redirecting to petition");
         res.redirect("/petition");
     } else if (
-        !url.startsWith("http://") ||
-        !url.startsWith("https://") ||
+        !url.startsWith("http://") &&
+        !url.startsWith("https://") &&
         !url.startsWith("//")
     ) {
         console.log("user has given a flase URL. redirecting to petition");
         res.redirect("/petition");
     } else {
-        console.log("post addProfile: ", age, city, url, userId);
+        console.log("user has give info in profile: ", age, city, url, userId);
         db.addProfile(age, city, url, userId)
             .then(() => {
                 res.redirect("/petition");
@@ -113,9 +128,7 @@ app.get("/profile/edit", (req, res) => {
 });
 
 app.post("/profile/edit", (req, res) => {
-    // console.log("this is the req.body: ", req.body);
     const { first, last, email, password, age, city, url } = req.body;
-    // console.log(req.body);
     const userId = req.session.userId;
     if (password === "") {
         db.updateNoPass(first, last, email, userId)
@@ -144,7 +157,6 @@ app.post("/profile/edit", (req, res) => {
             });
     } else {
         hash(password).then(hashedPw => {
-            // console.log("hashedPw from / register: ", hashedPw);
             db.updateWithPass(first, last, email, hashedPw, userId)
                 .then(() => {
                     db.updateExtraInfo(age, city, url, userId)
@@ -177,30 +189,24 @@ app.post("/profile/edit", (req, res) => {
     }
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", requireLoggedOutUser, (req, res) => {
     res.render("login", {});
 });
 
-app.post("/login", (req, res) => {
-    // console.log("req.session.userId: ", req.session.userId);
-    // console.log("req.body: ", req.body);
+app.post("/login", requireLoggedOutUser, (req, res) => {
     const { email, password } = req.body;
-    // console.log("email: ", email, "password: ", password);
     db.getPass(email)
         .then(response => {
-            // console.log("response: ", response);
             req.session.userId = response.rows[0].id;
             const hashedPwInDb = response.rows[0].password;
-            // console.log("response of db.getpass: ", response.rows[0]);
             compare(password, hashedPwInDb)
                 .then(matchValue => {
                     if (matchValue) {
                         db.ifSigned(req.session.userId)
                             .then(response => {
                                 if (response.rows.length > 0) {
-                                    req.session.sigId =
-                                        // response.rows[0].signature;
-                                        console.log("the user has signed");
+                                    req.session.sigId = response.rows[0].id;
+                                    console.log("the user has signed");
                                     res.redirect("/thanks");
                                 } else {
                                     console.log("the user didnt sign");
@@ -231,40 +237,27 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    // console.log("******** /ROUTE ******");
-    // console.log("req.sessions: ", req.session);
-    // req.session.allspice = "ALLSPICE";
-    // console.log("req.sessions: ", req.session);
-
     // db.getSig(req.session.sigId);
     res.redirect("/register");
-    // res.redirect("/petition");
 });
 
-app.get("/petition", (req, res) => {
+app.get("/petition", requireNoSignature, (req, res) => {
     res.render("petition", {
         layout: "main"
     });
 });
 
-app.post("/petition", (req, res) => {
+app.post("/petition", requireNoSignature, (req, res) => {
     const { signature } = req.body;
+    console.log("signature in petition: ", signature);
     const userId = req.session.userId;
     db.addSigner(signature, userId)
         .then(response => {
-            // console.log("where is the id? ", response);
+            console.log("response.rows[0].id ", response.rows[0].id);
             req.session.sigId = response.rows[0].id;
         })
         .then(() => {
-            if (signature !== "") {
-                // req.session.sigId = signature;
-                res.redirect("/thanks");
-            } else {
-                res.render("petition", {
-                    layout: "main",
-                    error: true
-                });
-            }
+            res.redirect("/thanks");
         })
         .catch(() => {
             res.render("petition", {
@@ -274,31 +267,40 @@ app.post("/petition", (req, res) => {
         });
 });
 
-app.get("/thanks", (req, res) => {
+app.get("/thanks", requireSignature, (req, res) => {
     // console.log("this is the id: ", req.session.sigId);
     let signersNr = req.session.sigId;
     let userId = req.session.userId;
-    db.getSig(userId).then(response => {
-        let image = response.rows[0].signature;
-        // console.log("this is the response in thanks:", response);
-        res.render("thanks", {
-            layout: "main",
-            image,
-            signersNr
+    // console.log("userId:", userId);
+    db.getSig(userId)
+        .then(response => {
+            let image = response.rows[0].signature;
+            // console.log("image: ", image);
+            // console.log("this is the response in thanks:", response);
+            res.render("thanks", {
+                layout: "main",
+                image,
+                signersNr
+            });
+        })
+        .catch(err => {
+            console.log("error in db.getSig: ", err);
         });
-    });
 });
 
-// app.post("/thanks", (req, res) => {
-//     console.log("req.body in /thanks: ", req.body);
-//     // console.log("this req.body: ", req.body);
-// });
+app.post("/signedOut", (req, res) => {
+    console.log("req.body in /signedOut: ", req.body);
+    req.session.userId = null;
+    res.redirect("/register");
+    // console.log("this req.body: ", req.body);
+});
 
-app.post("/delete/signature", (req, res) => {
+app.post("/delete/signature", requireSignature, (req, res) => {
     console.log("req.body in /delete/signature: ", req.body);
     const userId = req.session.userId;
     db.deleteSig(userId)
         .then(() => {
+            console.log("signature deleted");
             req.session.sigId = null;
             res.redirect("/petition");
         })
@@ -307,7 +309,7 @@ app.post("/delete/signature", (req, res) => {
         });
 });
 
-app.get("/signers", (req, res) => {
+app.get("/signers", requireSignature, (req, res) => {
     // const userId = req.session.userId;
     db.getFullProfile()
         .then(result => {
@@ -323,24 +325,41 @@ app.get("/signers", (req, res) => {
         });
 });
 
-app.get("/signers/:city", (req, res) => {
+app.get("/signers/:city", requireSignature, (req, res) => {
     const city = req.params.city;
-    // console.log(city);
     db.getCity(city).then(result => {
-        // console.log("result in signers/:city: ", result);
         const usersOfCity = result.rows;
-        // console.log("result.rows: ", usersOfCity);
         res.render("signers", {
             cities: true,
             usersOfCity
         });
     });
-    // res.send("this is the city: ", city);
 });
 
-app.listen(process.env.PORT || 8080, () => console.log("port 8080 listening"));
+app.get("/welcome", (req, res) => {
+    res.send("<h1>yooooooooo</h1>");
+});
 
-// app.use(function(req, res, next) {
-//     res.set('x-frame-options':'deny')
-//
-// })
+app.post("/welcome", (req, res) => {
+    req.session.submitted = true;
+    res.redirect("/home");
+});
+
+app.get("/home", (req, res) => {
+    if (!req.session.submitted === true) {
+        return res.redirect("/welcome");
+    }
+    console.log("req.session: ", req.session);
+    res.send("<h1>home</h1>");
+});
+
+if (require.main === module) {
+    app.listen(process.env.PORT || 8080, () =>
+        console.log("port 8080 listening")
+    );
+}
+
+//  <form method='POST' action='/signedOut'>
+//     <input type='hidden' name="_csrf" value={{csrfToken}}>
+//     <button name="sign-out">sign out</button>
+// </form>

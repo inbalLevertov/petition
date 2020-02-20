@@ -13,5 +13,11 @@
         <input type='hidden' name="_csrf" value={{csrfToken}}>
         <button name="button">delete signature</button>
     </form>
+
 </div>
+
 </div>
+ <form method='POST' action='/signedOut'>
+     <input type='hidden' name="_csrf" value={{csrfToken}}>
+     <button name="sign-out">sign out</button>
+ </form>

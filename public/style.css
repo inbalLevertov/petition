@@ -86,7 +86,7 @@ button {
 }
 
 #thanks-outer-container {
-    background-image: url(/thanks.jpg);
+    /* background-image: url(/thanks.jpg); */
     object-fit: cover;
     background-size: 100vw;
     background-repeat: no-repeat;

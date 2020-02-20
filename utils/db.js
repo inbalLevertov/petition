@@ -73,9 +73,7 @@ exports.getPass = function(email) {
 };
 
 exports.ifSigned = function(userId) {
-    return db.query(`SELECT signature FROM signatures WHERE user_id = $1`, [
-        userId
-    ]);
+    return db.query(`SELECT id FROM signatures WHERE user_id = $1`, [userId]);
 };
 
 exports.renderFullProfile = function(userId) {
@@ -102,18 +100,6 @@ exports.updateWithPass = function(first, last, email, hashedPw, userId) {
         [first, last, email, hashedPw, userId]
     );
 };
-
-// UPDATE actors SET first='Brad', last='Pitt' WHERE first=Leonardo AND last='Dicaprio';
-
-// exports.addRegister = function(first, last, email, password) {
-//     // console.log("addRegister is working");
-//     return db.query(
-//         `INSERT INTO users (first, last, email, password)
-//     VALUES ($1, $2, $3, $4)
-//     RETURNING id`,
-//         [first, last, email, password]
-//     );
-// };
 
 exports.updateExtraInfo = function(age, city, url, userId) {
     return db.query(
