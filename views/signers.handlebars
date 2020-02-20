@@ -2,12 +2,11 @@
 
 <ul>
             {{#names}}
-            <li>{{first}} {{last}} {{age}}
+            <li>
+            <a {{#if url}}href={{url}} target="_blank"{{/if}}>{{first}} {{last}}</a>{{age}}
             <a href="signers/{{city}}">{{city}}</a></li>
-            <a href={{url}} target="_blank">{{url}}</a></li>
             {{/names}}
         </ul>
-
 
 {{#if cities}}
         <ul>

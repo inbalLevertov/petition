@@ -32,7 +32,7 @@ LEFT JOIN user_profiles
  ON user_profiles.user_id = users.id
 JOIN signatures
 ON signatures.user_id = users.id
-WHERE user_profiles.city = $1`,
+WHERE LOWER(user_profiles.city) = LOWER($1)`,
         [city]
     );
 };
@@ -107,7 +107,7 @@ exports.updateExtraInfo = function(age, city, url, userId) {
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (user_id) DO
         UPDATE SET age=$1, city=$2, url=$3`,
-        [age, city, url, userId]
+        [age || null, city, url, userId]
     );
 };
 

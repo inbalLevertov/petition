@@ -37,17 +37,17 @@ app.use(function(req, res, next) {
     next();
 });
 
-// app.use(function(req, res, next) {
-//     if (
-//         !req.session.userId &&
-//         req.url !== "/register" &&
-//         req.url !== "/login"
-//     ) {
-//         res.redirect("/register");
-//     } else {
-//         next();
-//     }
-// });
+app.use(function(req, res, next) {
+    if (
+        !req.session.userId &&
+        req.url !== "/register" &&
+        req.url !== "/login"
+    ) {
+        res.redirect("/register");
+    } else {
+        next();
+    }
+});
 
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
@@ -133,24 +133,29 @@ app.post("/profile/edit", (req, res) => {
     if (password === "") {
         db.updateNoPass(first, last, email, userId)
             .then(() => {
-                db.updateExtraInfo(age, city, url, userId)
-                    .then(() => {
-                        console.log("success");
-                        res.render("thanks", {
-                            layout: "main",
-                            updated: true
+                if (
+                    !url.startsWith("http://") &&
+                    !url.startsWith("https://") &&
+                    !url.startsWith("//")
+                ) {
+                    res.redirect("/thanks");
+                } else {
+                    db.updateExtraInfo(age, city, url, userId)
+                        .then(() => {
+                            // console.log("success");
+                            res.redirect("/thanks");
+                        })
+                        .catch(err => {
+                            console.log(
+                                "error in updateExtraInfo with old pass: ",
+                                err
+                            );
+                            res.render("editprofile", {
+                                layout: "main",
+                                error: true
+                            });
                         });
-                    })
-                    .catch(err => {
-                        console.log(
-                            "error in updateExtraInfo with old pass: ",
-                            err
-                        );
-                        res.render("editprofile", {
-                            layout: "main",
-                            error: true
-                        });
-                    });
+                }
             })
             .catch(err => {
                 console.log("error in updateNoPass: ", err);
@@ -216,7 +221,6 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
                             .catch(err => {
                                 console.log("err of db.ifSigned: ", err);
                             });
-                        // res.redirect("/petition");
                     } else {
                         res.render("login", {
                             layout: "main",
@@ -237,7 +241,6 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    // db.getSig(req.session.sigId);
     res.redirect("/register");
 });
 
@@ -249,7 +252,7 @@ app.get("/petition", requireNoSignature, (req, res) => {
 
 app.post("/petition", requireNoSignature, (req, res) => {
     const { signature } = req.body;
-    console.log("signature in petition: ", signature);
+    // console.log("signature in petition: ", signature);
     const userId = req.session.userId;
     db.addSigner(signature, userId)
         .then(response => {
@@ -268,15 +271,12 @@ app.post("/petition", requireNoSignature, (req, res) => {
 });
 
 app.get("/thanks", requireSignature, (req, res) => {
-    // console.log("this is the id: ", req.session.sigId);
     let signersNr = req.session.sigId;
     let userId = req.session.userId;
-    // console.log("userId:", userId);
     db.getSig(userId)
         .then(response => {
             let image = response.rows[0].signature;
-            // console.log("image: ", image);
-            // console.log("this is the response in thanks:", response);
+
             res.render("thanks", {
                 layout: "main",
                 image,
