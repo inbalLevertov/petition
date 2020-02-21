@@ -96,22 +96,30 @@ app.post("/profile", (req, res) => {
     if (age === "" && city === "" && url === "") {
         console.log("user hasnt give any info, redirecting to petition");
         res.redirect("/petition");
-    } else if (
-        !url.startsWith("http://") &&
-        !url.startsWith("https://") &&
-        !url.startsWith("//")
-    ) {
-        console.log("user has given a flase URL. redirecting to petition");
-        res.redirect("/petition");
     } else {
-        console.log("user has give info in profile: ", age, city, url, userId);
-        db.addProfile(age, city, url, userId)
-            .then(() => {
-                res.redirect("/petition");
-            })
-            .catch(err => {
-                console.log("error in db.addprofile: ", err);
-            });
+        if (
+            !url.startsWith("http://") &&
+            !url.startsWith("https://") &&
+            !url.startsWith("//")
+        ) {
+            console.log("user has given a flase URL. redirecting to petition");
+            res.redirect("/petition");
+        } else {
+            console.log(
+                "user has give info in profile: ",
+                age,
+                city,
+                url,
+                userId
+            );
+            db.addProfile(age, city, url, userId)
+                .then(() => {
+                    res.redirect("/petition");
+                })
+                .catch(err => {
+                    console.log("error in db.addprofile: ", err);
+                });
+        }
     }
 });
 
@@ -271,26 +279,33 @@ app.post("/petition", requireNoSignature, (req, res) => {
 });
 
 app.get("/thanks", requireSignature, (req, res) => {
-    let signersNr = req.session.sigId;
-    let userId = req.session.userId;
-    db.getSig(userId)
-        .then(response => {
-            let image = response.rows[0].signature;
-
-            res.render("thanks", {
-                layout: "main",
-                image,
-                signersNr
-            });
+    // let signersNr = req.session.sigId;
+    db.numOfSigners()
+        .then(result => {
+            let signersNr = result.rows[0].id;
+            console.log("signersNr: ", signersNr);
+            let userId = req.session.userId;
+            db.getSig(userId)
+                .then(response => {
+                    let image = response.rows[0].signature;
+                    res.render("thanks", {
+                        layout: "main",
+                        image,
+                        signersNr
+                    });
+                })
+                .catch(err => {
+                    console.log("error in db.getSig: ", err);
+                });
         })
         .catch(err => {
-            console.log("error in db.getSig: ", err);
+            console.log("error in numOfSigners: ", err);
         });
 });
 
-app.post("/signedOut", (req, res) => {
+app.get("/signOut", (req, res) => {
     console.log("req.body in /signedOut: ", req.body);
-    req.session.userId = null;
+    req.session = null;
     res.redirect("/register");
     // console.log("this req.body: ", req.body);
 });

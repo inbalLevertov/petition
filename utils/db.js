@@ -115,6 +115,14 @@ exports.deleteSig = function(userId) {
     return db.query(`DELETE FROM signatures WHERE user_id=$1`, [userId]);
 };
 
+exports.numOfSigners = function() {
+    return db.query("SELECT id FROM signatures ORDER BY id desc limit 1");
+};
+//anoter option
+// return db.query("SELECT COUNT * FROM signatures");
+
+// select user_id from signatures ORDER BY id desc limit 1;
+
 // -- INSERT INTO actors (first, last, email, user_id)
 // -- VALUES ('Brad', 'Pitt', 'brad@aol.com', 42)
 // -- ON CONFLICT (user_id) DO
