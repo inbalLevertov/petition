@@ -124,7 +124,8 @@ exports.deleteUserProfile = function(userId) {
 };
 
 exports.numOfSigners = function() {
-    return db.query("SELECT id FROM signatures ORDER BY id desc limit 1");
+    // return db.query("SELECT id FROM signatures ORDER BY id desc limit 1");
+    return db.query(`SELECT COUNT(*) FROM signatures`);
 };
 //anoter option
 // return db.query("SELECT COUNT * FROM signatures");

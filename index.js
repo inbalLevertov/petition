@@ -58,7 +58,9 @@ app.get("/register", requireLoggedOutUser, (req, res) => {
 
 app.post("/register", requireLoggedOutUser, (req, res) => {
     const { password2, password, first, last, email } = req.body;
-    // console.log(password);
+    console.log("first: ", first, "last: ", last);
+    req.session.first = first;
+    req.session.last = last;
     //i will want to grab the useres password, somethinglike req.body.password
     //use hash to take user input created the hashed version of PW to storw in db
     if (password === password2) {
@@ -102,30 +104,31 @@ app.post("/profile", (req, res) => {
     if (age === "" && city === "" && url === "") {
         console.log("user hasnt give any info, redirecting to petition");
         res.redirect("/petition");
+        // } else if (
+        //     url !== "" &&
+        //     !url.startsWith("http://") &&
+        //     !url.startsWith("https://") &&
+        //     !url.startsWith("//")
+        // ) {
+        //     console.log("user has given a flase URL. redirecting to petition");
+        //     res.redirect("/petition");
+    } else if (
+        url !== "" &&
+        !url.startsWith("http://") &&
+        !url.startsWith("https://") &&
+        !url.startsWith("//")
+    ) {
+        console.log("user has given a flase URL. redirecting to petition");
+        res.redirect("/petition");
     } else {
-        if (
-            !url.startsWith("http://") &&
-            !url.startsWith("https://") &&
-            !url.startsWith("//")
-        ) {
-            console.log("user has given a flase URL. redirecting to petition");
-            res.redirect("/petition");
-        } else {
-            console.log(
-                "user has give info in profile: ",
-                age,
-                city,
-                url,
-                userId
-            );
-            db.addProfile(age, city, url, userId)
-                .then(() => {
-                    res.redirect("/petition");
-                })
-                .catch(err => {
-                    console.log("error in db.addprofile: ", err);
-                });
-        }
+        console.log("user has give info in profile: ", age, city, url, userId);
+        db.addProfile(age, city, url, userId)
+            .then(() => {
+                res.redirect("/petition");
+            })
+            .catch(err => {
+                console.log("error in db.addprofile: ", err);
+            });
     }
 });
 
@@ -157,6 +160,7 @@ app.post("/profile/edit", (req, res) => {
         db.updateNoPass(first, last, email, userId)
             .then(() => {
                 if (
+                    url !== "" &&
                     !url.startsWith("http://") &&
                     !url.startsWith("https://") &&
                     !url.startsWith("//")
@@ -273,8 +277,12 @@ app.get("/", (req, res) => {
 });
 
 app.get("/petition", requireNoSignature, (req, res) => {
+    const first = req.session.first;
+    const last = req.session.last;
     res.render("petition", {
-        layout: "main"
+        layout: "main",
+        first: first,
+        last: last
     });
 });
 
@@ -302,7 +310,7 @@ app.get("/thanks", requireSignature, (req, res) => {
     // let signersNr = req.session.sigId;
     db.numOfSigners()
         .then(result => {
-            let signersNr = result.rows[0].id;
+            let signersNr = result.rows[0].count;
             console.log("signersNr: ", signersNr);
             let userId = req.session.userId;
             db.getSig(userId)

@@ -7,6 +7,8 @@
     <input type='hidden' name="_csrf" value={{csrfToken}}>
     <button name="button">submit</button>
 </form>
+
+<p>Allready registered? Than log in <a href="/login">here</a></p>
 {{#if error}}
 <div class='err'>please fill out all fields before hitting the submit button</div>
 {{/if}}

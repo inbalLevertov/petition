@@ -3,7 +3,7 @@
 <ul>
             {{#names}}
             <li>
-            <a {{#if url}}href={{url}} target="_blank"{{/if}}>{{first}} {{last}}</a>{{age}}
+            <a {{#if url}}href={{url}} target="_blank"{{/if}}>{{first}} {{last}}</a> {{age}}
             <a href="signers/{{city}}">{{city}}</a></li>
             {{/names}}
         </ul>
@@ -11,7 +11,9 @@
 {{#if cities}}
         <ul>
             {{#usersOfCity}}
-                <li>{{first}} {{last}} {{age}} {{city}} {{url}}</li>
+            <li>{{first}} {{last}} {{age}}
+                <a {{#if url}}href={{url}} target="_blank"{{/if}}>{{url}}</a>
+            </li>
             {{/usersOfCity}}
         </ul>
 {{/if}}
