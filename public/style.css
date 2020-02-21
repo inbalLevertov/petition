@@ -116,3 +116,121 @@ h1 {
     background-color: yellow;
     border: black 3px solid;
 }
+
+img[alt="men"] {
+    cursor: grab;
+}
+#hamburger-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* display: none; */
+    visibility: hidden;
+}
+
+#hamburger-menu.on {
+    /* display: block; */
+    visibility: visible;
+}
+
+#hamburger-menu::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: red;
+    opacity: 0.5;
+}
+
+#menu {
+    background-color: white;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    max-width: 400px;
+    transform: translateX(100%); /*100 percent of its own width */
+    /* overflow: hidden; */
+}
+.on #menu {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    transform: translateX(0);
+    /* overflow: hidden; */
+}
+.on #menu .off {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    transform: translateX(-100%);
+}
+
+#menu a {
+    font-size: 22px;
+    /* display: block; */
+}
+#menu dd {
+    margin-bottom: 10px;
+}
+
+.x {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    color: gray;
+    font-size: 22px;
+}
+
+#modal-dialog {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    visibility: hidden;
+}
+
+#modal-dialog.onJQ {
+    visibility: visible;
+}
+
+#modal-dialog::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: black;
+    opacity: 0.5;
+}
+#popup {
+    background-color: white;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-around; */
+    align-items: flex-start;
+    padding-left: 30px;
+    padding-top: 30px;
+    left: 25%;
+    top: 25%;
+    height: 50%;
+    width: 50%;
+    max-width: 600px;
+}
+
+h2 {
+    width: 100%;
+    height: 10px'
+}
+
+.popup-text {
+    width: 100%;
+    height: 10px;
+}

@@ -57,33 +57,39 @@ app.get("/register", requireLoggedOutUser, (req, res) => {
 });
 
 app.post("/register", requireLoggedOutUser, (req, res) => {
-    const { password, first, last, email } = req.body;
+    const { password2, password, first, last, email } = req.body;
     // console.log(password);
     //i will want to grab the useres password, somethinglike req.body.password
     //use hash to take user input created the hashed version of PW to storw in db
-    hash(password).then(hashedPw => {
-        db.addRegister(first, last, email, hashedPw)
-            .then(response => {
-                req.session.userId = response.rows[0].id;
-            })
-            .then(() => {
-                if (
-                    first !== "" ||
-                    last !== "" ||
-                    email !== "" ||
-                    hashedPw !== ""
-                ) {
-                    res.redirect("/profile");
-                }
-            })
-            .catch(err => {
-                console.log("error in addRegister: ", err);
-                res.render("register", {
-                    layout: "main",
-                    error: true
+    if (password === password2) {
+        hash(password).then(hashedPw => {
+            db.addRegister(first, last, email, hashedPw)
+                .then(response => {
+                    req.session.userId = response.rows[0].id;
+                })
+                .then(() => {
+                    if (
+                        first !== "" ||
+                        last !== "" ||
+                        email !== "" ||
+                        hashedPw !== ""
+                    ) {
+                        res.redirect("/profile");
+                    }
+                })
+                .catch(err => {
+                    console.log("error in addRegister: ", err);
+                    res.render("register", {
+                        layout: "main",
+                        error: true
+                    });
                 });
-            });
-    });
+        });
+    } else {
+        res.render("register", {
+            repeatPass: true
+        });
+    }
 });
 
 app.get("/profile", (req, res) => {
@@ -136,7 +142,16 @@ app.get("/profile/edit", (req, res) => {
 });
 
 app.post("/profile/edit", (req, res) => {
-    const { first, last, email, password, age, city, url } = req.body;
+    const {
+        first,
+        last,
+        email,
+        password,
+        password2,
+        age,
+        city,
+        url
+    } = req.body;
     const userId = req.session.userId;
     if (password === "") {
         db.updateNoPass(first, last, email, userId)
@@ -169,36 +184,38 @@ app.post("/profile/edit", (req, res) => {
                 console.log("error in updateNoPass: ", err);
             });
     } else {
-        hash(password).then(hashedPw => {
-            db.updateWithPass(first, last, email, hashedPw, userId)
-                .then(() => {
-                    db.updateExtraInfo(age, city, url, userId)
-                        .then(() => {
-                            console.log("success");
-                            res.render("thanks", {
-                                layout: "main",
-                                updated: true
+        if (password === password2) {
+            hash(password).then(hashedPw => {
+                db.updateWithPass(first, last, email, hashedPw, userId)
+                    .then(() => {
+                        db.updateExtraInfo(age, city, url, userId)
+                            .then(() => {
+                                console.log("success");
+                                res.render("thanks", {
+                                    layout: "main",
+                                    updated: true
+                                });
+                            })
+                            .catch(err => {
+                                console.log(
+                                    "error in updateExtraInfo with new pass: ",
+                                    err
+                                );
+                                res.render("editprofile", {
+                                    layout: "main",
+                                    error: true
+                                });
                             });
-                        })
-                        .catch(err => {
-                            console.log(
-                                "error in updateExtraInfo with new pass: ",
-                                err
-                            );
-                            res.render("editprofile", {
-                                layout: "main",
-                                error: true
-                            });
+                    })
+                    .catch(err => {
+                        console.log("error in updateWithPass: ", err);
+                        res.render("editprofile", {
+                            layout: "main",
+                            error: true
                         });
-                })
-                .catch(err => {
-                    console.log("error in updateWithPass: ", err);
-                    res.render("editprofile", {
-                        layout: "main",
-                        error: true
                     });
-                });
-        });
+            });
+        }
     }
 });
 
@@ -242,6 +259,9 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
         })
         .catch(err => {
             console.log("err in db.getpass: ", err);
+            res.render("login", {
+                error2: true
+            });
         }); //here we will use compare to compare the two arguments
 
     //if the pw matched you will want to redirect to /petition. will want to set req.session.userID
@@ -318,6 +338,32 @@ app.post("/delete/signature", requireSignature, (req, res) => {
             console.log("signature deleted");
             req.session.sigId = null;
             res.redirect("/petition");
+        })
+        .catch(err => {
+            console.log("error in db.deleteSig: ", err);
+        });
+});
+
+app.post("/delete/account", requireSignature, (req, res) => {
+    console.log("req.body in /delete/account: ", req.body);
+    const userId = req.session.userId;
+    db.deleteSig(userId)
+        .then(() => {
+            db.deleteUserProfile(userId)
+                .then(() => {
+                    db.deleteUser(userId)
+                        .then(() => {
+                            console.log("acount deleted");
+                            req.session = null;
+                            res.redirect("/register");
+                        })
+                        .catch(err => {
+                            console.log("error in db.deleteUser: ", err);
+                        });
+                })
+                .catch(err => {
+                    console.log("error in db.deleteUserProfile: ", err);
+                });
         })
         .catch(err => {
             console.log("error in db.deleteSig: ", err);

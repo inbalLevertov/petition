@@ -1,58 +1,42 @@
-console.log("hello");
-// var container = $("#container");
-// var color = $(".color");
-//
-// color.on("mousedown", function() {
-//     container.on("mousemove", mouse);
-//     container.on("mouseup", function(e) {
-//         container.off("mousemove", mouse);
-//     });
-// });
-//
-// function mouse(e) {
-//     color.eq(c).css({
-//         left: e.clientX - 30 + "px",
-//         top: e.clientY - 30 + "px"
-//     });
-// }
+var hamburgerButton = document.getElementById("men");
+var hamburgerMenu = document.getElementById("hamburger-menu");
+var xes = document.querySelectorAll(".x");
+console.log("xes: ", xes);
+var x1 = xes[0];
+var whiteMenu = document.getElementById("menu");
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-let paint = false;
+//jquery
+var xx = $(".x");
+var x0 = xx.eq(0);
+var modalDialog = $("#modal-dialog");
+console.log(modalDialog);
+var onJQ = $(".onJQ");
+console.log(onJQ);
 
-ctx.strokeStyle = "tomato";
-ctx.lineWidth = 3;
-
-let xBegin = 0;
-let yBegin = 0;
-let xEnd = 0;
-let yEnd = 0;
-
-$("#canvas").on("mousedown", function(e) {
-    paint = true;
-    xBegin = e.offsetX;
-    yBegin = e.offsetY;
-    ctx.moveTo(xBegin, yBegin);
-    // console.log("is this hapening");
+hamburgerButton.addEventListener("click", function() {
+    hamburgerMenu.classList.add("on");
 });
 
-$("#canvas").on("mousemove", function(e) {
-    xEnd = e.offsetX;
-    yEnd = e.offsetY;
-    if (paint === true) {
-        drawSig(xEnd, yEnd);
-    }
+x1.addEventListener("click", function() {
+    hamburgerMenu.classList.remove("on");
+    hamburgerMenu.classList.add("off");
+    hamburgerMenu.classList.remove("off");
 });
 
-function drawSig(xEnd, yEnd) {
-    ctx.lineTo(xEnd, yEnd);
-    ctx.stroke();
-}
+hamburgerMenu.addEventListener("click", function() {
+    hamburgerMenu.classList.remove("on");
+});
 
-$("#canvas").on("mouseup", function() {
-    paint = false;
-    let URL = canvas.toDataURL("image/png", 1.0);
-    $("input#sig").val($("canvas")[0].toDataURL());
+whiteMenu.addEventListener("click", function(e) {
+    e.stopPropagation();
+});
 
-    // console.log(URL);
+$(document).ready(function() {
+    setTimeout(function() {
+        modalDialog.addClass("onJQ");
+    }, 1000);
+});
+x0.on("click", function(e) {
+    e.stopPropagation();
+    modalDialog.removeClass("onJQ");
 });

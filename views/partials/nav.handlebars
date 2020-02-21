@@ -1,0 +1,20 @@
+<div id="hamburger-menu">
+    <div id="menu">
+        <dl>
+            <dd>Update profile <a href="/profile/edit">here</a></dd>
+            <dd><a href="/signOut">sign out</a></dd>
+            <dd><form method='POST' action='/delete/signature'>
+                <input type='hidden' name="_csrf" value={{csrfToken}}>
+                <button name="button">delete signature</button>
+            </form></dd>
+            <form method='POST' action='/delete/account'>
+                <input type='hidden' name="_csrf" value={{csrfToken}}>
+                <button name="button">delete account</button>
+            </form>
+        </dl>
+        <div class="x">x</div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/script.js"></script>

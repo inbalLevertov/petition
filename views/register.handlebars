@@ -2,10 +2,14 @@
     <input placeholder="first name" name="first">
     <input placeholder="last name" name="last">
     <input placeholder="emailAdress" name="email">
-    <input placeholder="password" name="password">
+    <input type="password" placeholder="password" name="password">
+    <input type="password" placeholder=" repeat password" name="password2">
     <input type='hidden' name="_csrf" value={{csrfToken}}>
     <button name="button">submit</button>
 </form>
 {{#if error}}
-<div class='err'>please fill out all fields before hitting the submit butto</div>
+<div class='err'>please fill out all fields before hitting the submit button</div>
+{{/if}}
+{{#if repeatPass}}
+<div class='err'>please repeat the same password twice</div>
 {{/if}}

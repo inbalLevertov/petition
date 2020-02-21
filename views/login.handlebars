@@ -1,11 +1,14 @@
 <form method='POST'>
     <input placeholder="emailAdress" name="email">
-    <input placeholder="password" name="password">
+    <input type="password" placeholder="password" name="password">
     <input type='hidden' name="_csrf" value={{csrfToken}}>
     <button name="button">submit</button>
-    {{isInput}}
 </form>
 
 {{#if error}}
 <div class='err'>password or email incorrect, please try again</div>
+{{/if}}
+
+{{#if error2}}
+<div class='err'>User is not registerd. Please register first</div>
 {{/if}}

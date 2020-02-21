@@ -115,6 +115,14 @@ exports.deleteSig = function(userId) {
     return db.query(`DELETE FROM signatures WHERE user_id=$1`, [userId]);
 };
 
+exports.deleteUser = function(userId) {
+    return db.query(`DELETE FROM users WHERE id=$1`, [userId]);
+};
+
+exports.deleteUserProfile = function(userId) {
+    return db.query(`DELETE FROM user_profiles WHERE user_id=$1`, [userId]);
+};
+
 exports.numOfSigners = function() {
     return db.query("SELECT id FROM signatures ORDER BY id desc limit 1");
 };
