@@ -1,20 +1,28 @@
+
+<div class="cont">
+    <p id="register-text">Join us in the fight against Leitungswasser shaming!</p>
+    <p id="slide" class="on">(we were gonna order food anyway)</p>
+</div>
+
+
 <div class="profile-container">
     <div class="fullProfile">
+
         <form method='POST'>
             <input placeholder="first name" name="first">
             <input placeholder="last name" name="last">
-            <input placeholder="emailAdress" name="email">
+            <input placeholder="email address" name="email">
             <input type="password" placeholder="password" name="password">
-            <input type="password" placeholder=" repeat password" name="password2">
+            <input type="password" placeholder="repeat password" name="password2">
             <input type='hidden' name="_csrf" value={{csrfToken}}>
-            <button name="button">submit</button>
+            <button id="submit" name="button">submit</button>
         </form>
     </div>
 </div>
 
 
 
-<p id="allready">Allready registered? Log in <a href="/login">here</a></p>
+<p id="already">Already registered? Log in <a href="/login">here</a></p>
 <div class="err-container">
 
 {{#if error}}

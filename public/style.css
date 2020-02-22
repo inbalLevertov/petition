@@ -42,19 +42,19 @@ p {
 #canvas {
     margin-top: 10px;
     margin-bottom: 5px;
-    background-color: #00807d;
+    background-color: #ccffcc;
 }
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     background-image: url(/background-water.jpg);
     object-fit: cover;
     background-size: 100vw;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    /* height: 90vh; */
+    height: 70vh;
 }
 
 .inner-container {
@@ -78,7 +78,7 @@ p {
     font-size: 15px;
     margin: 10px;
     text-align: center;
-    color: white;
+    color: black;
 }
 /* #sign-big {
     position: relative;
@@ -120,7 +120,8 @@ button {
     margin-bottom: 10px;
 }
 
-h1 {
+h1,
+#register-text {
     text-align: center;
 }
 
@@ -141,16 +142,22 @@ h1 {
 
 form input {
     width: 200px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+#submit {
+    margin-top: 10px;
 }
 
 #edit-profile {
     width: 200px;
     background-color: yellow;
     border: black 3px solid;
+    margin-top: 10px;
 }
 
-#allready {
+#already {
     text-align: center;
     margin-top: 15px;
 }
@@ -165,6 +172,7 @@ form input {
     margin: 5px;
     display: flex;
     align-items: center;
+    margin-right: 100px;
     /* position: absolute; */
 }
 .err-container {
@@ -176,7 +184,7 @@ form input {
 
 #to-signers {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 100px;
 }
 
 img[alt="signature"] {
@@ -185,6 +193,7 @@ img[alt="signature"] {
 img[alt="signature-gif"] {
     width: 370px;
     z-index: 2;
+    margin-top: 15px;
 }
 img[alt="glas"] {
     height: 400px;
@@ -252,6 +261,39 @@ img[alt="men"] {
     transform: translateX(100%); /*100 percent of its own width */
     /* overflow: hidden; */
 }
+
+/* #slide {
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+} */
+
+#slide {
+    animation-duration: 3s;
+    animation-name: slidein;
+    text-align: center;
+}
+
+@keyframes slidein {
+    from {
+        margin-left: 100%;
+        width: 300%;
+    }
+
+    to {
+        margin-left: 0%;
+        width: 100%;
+    }
+}
+
+.cont {
+    overflow: hidden;
+}
+/* .on #slide {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    transform: translateX(0); */
+/* } */
 .on #menu {
     transition-property: transform;
     transition-duration: 0.5s;

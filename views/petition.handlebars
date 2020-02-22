@@ -1,24 +1,26 @@
+<img src="/hamburgermenu.svg" alt="men" id="men">
 
 <div class="container">
     <img id="water" src="/water.jpg" alt="water">
-    <p>hello {{first}} {{last}}</p>
     <div class="inner-container">
+        <p>Thank you {{first}}! to complete the process please sign below and submit</p>
         {{#if error}}
         <div class='err'>please sign before submitting</div>
         {{/if}}
-        <p>Join us in the fight against Leitungswasser shaming!</p>
-        <p>(we were gonna order food anyway)</p>
-        <form method='POST'>
-            <input type='hidden' id="sig" name="signature">
-            <input type='hidden' name="_csrf" value={{csrfToken}}>
-            <button name="button">submit</button>
-        </form>
+
             <div id="sign-container">
                 <p id="sign">sign here =></p>
                 <canvas id="canvas" width="200" height="100"></canvas>
             </div>
+            <form method='POST'>
+                <input type='hidden' id="sig" name="signature">
+                <input type='hidden' name="_csrf" value={{csrfToken}}>
+                <button name="button">submit</button>
+            </form>
     </div>
 </div>
+{{>nav}}
+
 <footer>Inbal Levertov, Petition Project, Allspice cohort, Berlin February 2020</footer>
 
 
