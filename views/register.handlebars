@@ -1,14 +1,17 @@
-<form method='POST'>
-    <input placeholder="first name" name="first">
-    <input placeholder="last name" name="last">
-    <input placeholder="emailAdress" name="email">
-    <input type="password" placeholder="password" name="password">
-    <input type="password" placeholder=" repeat password" name="password2">
-    <input type='hidden' name="_csrf" value={{csrfToken}}>
-    <button name="button">submit</button>
-</form>
-
-<p>Allready registered? Than log in <a href="/login">here</a></p>
+<div class="profile-container">
+    <div class="fullProfile">
+        <form method='POST'>
+            <input placeholder="first name" name="first">
+            <input placeholder="last name" name="last">
+            <input placeholder="emailAdress" name="email">
+            <input type="password" placeholder="password" name="password">
+            <input type="password" placeholder=" repeat password" name="password2">
+            <input type='hidden' name="_csrf" value={{csrfToken}}>
+            <button name="button">submit</button>
+        </form>
+    </div>
+</div>
+<p id="allready">Allready registered? Than log in <a href="/login">here</a></p>
 {{#if error}}
 <div class='err'>please fill out all fields before hitting the submit button</div>
 {{/if}}

@@ -155,6 +155,8 @@ app.post("/profile/edit", (req, res) => {
         city,
         url
     } = req.body;
+    req.session.first = first;
+    req.session.last = last;
     const userId = req.session.userId;
     if (password === "") {
         db.updateNoPass(first, last, email, userId)
@@ -228,6 +230,9 @@ app.get("/login", requireLoggedOutUser, (req, res) => {
 });
 
 app.post("/login", requireLoggedOutUser, (req, res) => {
+    const { first, last } = req.body;
+    req.session.first = first;
+    req.session.last = last;
     const { email, password } = req.body;
     db.getPass(email)
         .then(response => {
@@ -279,6 +284,7 @@ app.get("/", (req, res) => {
 app.get("/petition", requireNoSignature, (req, res) => {
     const first = req.session.first;
     const last = req.session.last;
+    console.log("first and last: ", first, last);
     res.render("petition", {
         layout: "main",
         first: first,
@@ -308,6 +314,7 @@ app.post("/petition", requireNoSignature, (req, res) => {
 
 app.get("/thanks", requireSignature, (req, res) => {
     // let signersNr = req.session.sigId;
+    // const first = req.session.first;
     db.numOfSigners()
         .then(result => {
             let signersNr = result.rows[0].count;
@@ -320,6 +327,7 @@ app.get("/thanks", requireSignature, (req, res) => {
                         layout: "main",
                         image,
                         signersNr
+                        // first: first
                     });
                 })
                 .catch(err => {

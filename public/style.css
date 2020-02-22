@@ -11,9 +11,12 @@ header {
 }
 
 footer {
+    width: 100vw;
     margin-top: 10px;
     text-align: center;
     font-size: 12px;
+    position: absolute;
+    top: 90vh;
 }
 
 #water {
@@ -116,6 +119,11 @@ h1 {
     background-color: yellow;
     border: black 3px solid;
 }
+
+#allready {
+    text-align: center;
+}
+/* NAV */
 #men {
     float: right;
     height: 50px;
