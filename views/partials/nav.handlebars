@@ -1,8 +1,12 @@
+<div class="profile-container">
+    <div class="fullProfile">
 <div id="hamburger-menu">
     <div id="menu">
         <dl>
-            <dd>Update profile <a href="/profile/edit">here</a></dd>
-            <dd><a href="/signOut">sign out</a></dd>
+            <button name="button"><dd><a href="/profile/edit">Update profile</a></dd></button>
+            <button name="button"><dd><a href="/signOut">sign out</a></dd></button>
+
+
             <dd><form method='POST' action='/delete/signature'>
                 <input type='hidden' name="_csrf" value={{csrfToken}}>
                 <button name="button">delete signature</button>
@@ -13,6 +17,8 @@
             </form>
         </dl>
         <div class="x">x</div>
+    </div>
+</div>
     </div>
 </div>
 

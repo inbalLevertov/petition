@@ -1,5 +1,6 @@
-<h1>This is who we have so far:</h1>
-
+<h1>This is who we have so far</h1>
+<div class="profile-container">
+    <div class="fullProfile">
 <ul>
             {{#names}}
             <li>
@@ -9,6 +10,7 @@
         </ul>
 
 {{#if cities}}
+<h1>in {{city}}:</h1>
         <ul>
             {{#usersOfCity}}
             <li>{{first}} {{last}} {{age}}
@@ -17,3 +19,7 @@
             {{/usersOfCity}}
         </ul>
 {{/if}}
+<img src="https://media.giphy.com/media/H5urqjnvEg8TK/giphy.gif" alt="signature-gif">
+
+</div>
+</div>

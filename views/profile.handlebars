@@ -1,7 +1,13 @@
-<form method='POST'>
-    <input placeholder="Age" name="age">
-    <input placeholder="City" name="city">
-    <input placeholder="Homepage" name="url">
-    <input type='hidden' name="_csrf" value={{csrfToken}}>
-    <button name="button">continue</button>
-</form>
+<p id="not-mandatory">If you like you can add your age, city and homepage and click continue</p>
+
+<div class="profile-container">
+    <div class="fullProfile">
+        <form method='POST'>
+            <input placeholder="Age" name="age">
+            <input placeholder="City" name="city">
+            <input placeholder="Homepage" name="url">
+            <input type='hidden' name="_csrf" value={{csrfToken}}>
+            <button name="button">continue</button>
+        </form>
+    </div>
+</div>

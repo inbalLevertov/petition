@@ -408,7 +408,8 @@ app.get("/signers/:city", requireSignature, (req, res) => {
         const usersOfCity = result.rows;
         res.render("signers", {
             cities: true,
-            usersOfCity
+            usersOfCity,
+            city: city
         });
     });
 });

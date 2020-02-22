@@ -1,6 +1,12 @@
 * {
     font-family: "Indie Flower", cursive;
+    box-sizing: border-box;
+    margin: 0;
     /* background-color: #00a8ff; */
+}
+
+body {
+    height: 100%;
 }
 
 header {
@@ -8,6 +14,7 @@ header {
     text-align: center;
     font-size: 40px;
     background-color: #00a8ff;
+    height: 95px;
 }
 
 footer {
@@ -17,21 +24,25 @@ footer {
     font-size: 12px;
     position: absolute;
     top: 90vh;
+    z-index: -1;
 }
 
 #water {
     object-fit: cover;
-    width: 300px;
+    width: 200px;
+    margin-top: 15px;
+    margin-bottom: 0;
 }
 
 p {
     font-size: 25px;
+    margin: 0;
 }
 
 #canvas {
     margin-top: 10px;
-    /* margin-bottom: 10px; */
-    background-color: purple;
+    margin-bottom: 5px;
+    background-color: #00807d;
 }
 .container {
     display: flex;
@@ -43,7 +54,7 @@ p {
     background-size: 100vw;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 90vh;
+    /* height: 90vh; */
 }
 
 .inner-container {
@@ -65,11 +76,18 @@ p {
 
 #sign {
     font-size: 15px;
-    margin: 0;
+    margin: 10px;
+    text-align: center;
+    color: white;
 }
+/* #sign-big {
+    position: relative;
+    width: 100vw;
+} */
 
 button {
     border: black 2px solid;
+    background-color: bisque;
 }
 
 #sig {
@@ -79,6 +97,8 @@ button {
 
 #sig p {
     text-align: center;
+    margin-top: 10px;
+    font-size: 20px;
 }
 
 #thanks-inner-container {
@@ -89,16 +109,24 @@ button {
 }
 
 #thanks-outer-container {
-    /* background-image: url(/thanks.jpg); */
+    background-image: url(/thanks-BG.jpg);
     object-fit: cover;
     background-size: 100vw;
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 79vh;
 }
+#thanks-outer-container h1 {
+    margin-bottom: 10px;
+}
 
 h1 {
     text-align: center;
+}
+
+#not-mandatory {
+    text-align: center;
+    margin-bottom: 15px;
 }
 .profile-container {
     display: flex;
@@ -109,9 +137,11 @@ h1 {
     flex-direction: column;
 }
 
-.fullProfile form input {
+/* .fullProfile  */
+
+form input {
     width: 200px;
-    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #edit-profile {
@@ -122,14 +152,64 @@ h1 {
 
 #allready {
     text-align: center;
+    margin-top: 15px;
 }
+
+#tap {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 0;
+}
+
+#sign-container {
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    /* position: absolute; */
+}
+.err-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#to-signers {
+    text-align: center;
+    margin-top: 10px;
+}
+
+img[alt="signature"] {
+    margin-left: 100px;
+}
+img[alt="signature-gif"] {
+    width: 370px;
+    z-index: 2;
+}
+img[alt="glas"] {
+    height: 400px;
+    z-index: 2;
+}
+
+#login-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* #thanks-sig{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+} */
+
 /* NAV */
 #men {
     float: right;
     height: 50px;
     position: absolute;
     right: 50px;
-    top: 20px;
+    top: 15px;
+    width: 40px;
 }
 
 img[alt="men"] {
@@ -185,23 +265,36 @@ img[alt="men"] {
 }
 
 #menu a {
-    font-size: 22px;
+    /* font-size: 22px; */
     /* display: block; */
 }
 #menu dd {
     margin-bottom: 10px;
 }
 
-.x {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+#menu button {
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    text-decoration: underline;
+    color: #551a8b;
     cursor: pointer;
-    color: gray;
-    font-size: 22px;
 }
 
-#modal-dialog {
+.x {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    cursor: pointer;
+    color: black;
+    font-size: 30px;
+}
+
+dl {
+    margin-top: 40px;
+}
+
+/* #modal-dialog {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -230,7 +323,7 @@ img[alt="men"] {
     display: flex;
     flex-direction: column;
     /* justify-content: space-around; */
-    align-items: flex-start;
+/* align-items: flex-start;
     padding-left: 30px;
     padding-top: 30px;
     left: 25%;
@@ -242,10 +335,10 @@ img[alt="men"] {
 
 h2 {
     width: 100%;
-    height: 10px'
+    height: 10px;
 }
 
 .popup-text {
     width: 100%;
     height: 10px;
-}
+} */

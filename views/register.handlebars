@@ -11,10 +11,18 @@
         </form>
     </div>
 </div>
-<p id="allready">Allready registered? Than log in <a href="/login">here</a></p>
+
+
+
+<p id="allready">Allready registered? Log in <a href="/login">here</a></p>
+<div class="err-container">
+
 {{#if error}}
 <div class='err'>please fill out all fields before hitting the submit button</div>
 {{/if}}
 {{#if repeatPass}}
 <div class='err'>please repeat the same password twice</div>
 {{/if}}
+</div>
+
+<footer>Inbal Levertov, Petition Project, Allspice cohort, Berlin February 2020</footer>

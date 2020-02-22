@@ -1,14 +1,25 @@
+
+<div id="login-container">
 <form method='POST'>
     <input placeholder="emailAdress" name="email">
     <input type="password" placeholder="password" name="password">
     <input type='hidden' name="_csrf" value={{csrfToken}}>
     <button name="button">submit</button>
 </form>
+</div>
+<img src="/glas.jpg" alt="glas">
+
+
+<div class="err-container">
 
 {{#if error}}
-<div class='err'>password or email incorrect, please try again</div>
+<div class='err'>Password or email incorrect, please try again</div>
 {{/if}}
 
 {{#if error2}}
 <div class='err'>User is not registerd. Please register first</div>
 {{/if}}
+</div>
+
+
+<footer>Inbal Levertov, Petition Project, Allspice cohort, Berlin February 2020</footer>

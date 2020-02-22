@@ -4,7 +4,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 let paint = false;
 
-ctx.strokeStyle = "tomato";
+ctx.strokeStyle = "black";
 ctx.lineWidth = 3;
 
 let xBegin = 0;
