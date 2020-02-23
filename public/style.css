@@ -191,9 +191,11 @@ img[alt="signature"] {
     margin-left: 100px;
 }
 img[alt="signature-gif"] {
-    width: 370px;
+    width: 300px;
+    height: 180px;
     z-index: 2;
-    margin-top: 15px;
+    margin: 15px;
+    object-fit: cover;
 }
 img[alt="glas"] {
     height: 400px;
@@ -334,6 +336,102 @@ img[alt="men"] {
 
 dl {
     margin-top: 40px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 667px) {
+    .fullProfile form {
+        width: 100vw;
+    }
+    form input,
+    #submit {
+        margin: 15px;
+        font-size: 22px;
+    }
+
+    #submit {
+        width: 200px;
+    }
+
+    header {
+        align-content: center;
+        font-size: 15px;
+        text-align: justify;
+        height: 60px;
+    }
+
+    #tap {
+        align-content: center;
+        text-align: justify;
+        font-size: 12px;
+    }
+    #slide {
+        display: none;
+    }
+
+    #register-text {
+        font-size: 18px;
+    }
+    footer {
+        font-size: 9px;
+        text-align: left;
+    }
+
+    body {
+        margin: 0px;
+        width: 100%;
+    }
+    #menu {
+        right: 30px;
+    }
+
+    #sprint {
+        left: 30px;
+    }
+
+    h1 {
+        font-size: 25px;
+        top: 25%;
+        transform: translate(-50%, -25%);
+    }
+
+    #button {
+        width: 150px;
+        height: 30px;
+        font-size: 15px;
+        top: 70%;
+        transform: translate(-50%, -70%);
+    }
+    .box {
+        width: 100%;
+        float: left;
+        margin-left: 15px;
+        margin-right: 15px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    p {
+        width: 55%;
+        float: left;
+        margin-left: 40px;
+    }
+
+    .icon {
+        margin-top: 25px;
+    }
+
+    .bottom {
+        height: 650px;
+        margin-top: 0px;
+    }
+
+    .main_page {
+        /* margin-top: 20px; */
+    }
+
+    footer p {
+        width: 100%;
+    }
 }
 
 /* #modal-dialog {
